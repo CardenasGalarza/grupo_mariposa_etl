@@ -1,0 +1,84 @@
+# =============================================================================
+# CONFIGURACIÓN DEL PIPELINE ETL - GRUPO MARIPOSA
+# =============================================================================
+# Autor: Giancarlos Cardenas Galarza
+# Fecha: Diciembre 2025
+#
+# Este archivo controla todos los parámetros del flujo de datos usando OmegaConf
+# (REQUISITO 4: Utiliza OmegaConf para controlar todos los parámetros desde YAML)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# CONFIGURACIÓN DE FECHAS (REQUISITO 2)
+# Formato: YYYYMMDD
+# Se filtra el rango de fechas para los primeros 6 meses del año
+# -----------------------------------------------------------------------------
+dates:
+  start_date: 20250101  # Fecha de inicio del rango
+  end_date: 20250630    # Fecha de fin del rango
+
+# -----------------------------------------------------------------------------
+# FILTROS (REQUISITO 5)
+# Países disponibles: GT (Guatemala), PE (Perú), EC (Ecuador), 
+#                     SV (El Salvador), HN (Honduras), JM (Jamaica)
+# Dejar null para procesar todos los países
+# -----------------------------------------------------------------------------
+filter:
+  country: null  # null = todos los países, o especificar código (GT, PE, etc.)
+
+# -----------------------------------------------------------------------------
+# RUTAS DE ARCHIVOS (REQUISITO 1 y 3)
+# input_file: Archivo CSV de entrada
+# output_path: Directorio de salida con particiones por fecha_proceso
+# -----------------------------------------------------------------------------
+paths:
+  input_file: "data/input/global_mobility_data_entrega_productos.csv"
+  output_path: "data/processed"  # Formato: data/processed/${fecha_proceso}
+
+# -----------------------------------------------------------------------------
+# CONFIGURACIÓN DE UNIDADES (REQUISITO 6)
+# CS (cajas) se convierte a unidades multiplicando por este factor
+# ST (unidades) se mantiene igual
+# -----------------------------------------------------------------------------
+units:
+  cs_to_units: 20  # 1 caja = 20 unidades
+
+# -----------------------------------------------------------------------------
+# TIPOS DE ENTREGA (REQUISITO 7)
+# routine: Entregas de rutina (ZPRE, ZVE1)
+# bonus: Entregas con bonificación (Z04, Z05)
+# Cualquier otro tipo (COBR, etc.) será excluido del output
+# -----------------------------------------------------------------------------
+delivery_types:
+  routine:
+    - "ZPRE"
+    - "ZVE1"
+  bonus:
+    - "Z04"
+    - "Z05"
+
+# -----------------------------------------------------------------------------
+# CALIDAD DE DATOS (REQUISITO 9)
+# Configuración para detectar/eliminar anomalías
+# -----------------------------------------------------------------------------
+data_quality:
+  remove_empty_materials: true   # Eliminar registros con material vacío
+  remove_zero_prices: false      # Mantener precios 0 (pueden ser promociones)
+  remove_duplicates: true        # Eliminar registros duplicados
+
+# -----------------------------------------------------------------------------
+# CONFIGURACIÓN DE SPARK
+# -----------------------------------------------------------------------------
+spark:
+  app_name: "GrupoMariposa_ETL_Pipeline"
+  master: "local[*]"  # Usar todos los cores disponibles
+  log_level: "WARN"   # DEBUG, INFO, WARN, ERROR
+
+# -----------------------------------------------------------------------------
+# CONFIGURACIÓN DE SALIDA (REQUISITO 3)
+# Datos particionados por fecha_proceso
+# -----------------------------------------------------------------------------
+output:
+  format: "parquet"          # parquet (recomendado), csv, json
+  mode: "overwrite"          # overwrite, append
+  partition_by: "fecha_proceso"

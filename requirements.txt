@@ -1,0 +1,4 @@
+# Dependencias del proyecto ETL Grupo Mariposa
+pyspark>=3.4.0
+omegaconf>=2.3.0
+pytest>=7.0.0

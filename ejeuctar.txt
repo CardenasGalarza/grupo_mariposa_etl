@@ -1,0 +1,41 @@
+============================================================
+🦋  GUÍA DE EJECUCIÓN: ETL GRUPO MARIPOSA
+============================================================
+
+📂 1. PREPARACIÓN DEL ENTORNO
+------------------------------------------------------------
+Antes de ejecutar, asegúrate de estar en el directorio correcto:
+
+   $ cd grupo_mariposa_etl
+
+
+🚀 2. EJECUCIÓN BÁSICA (POR DEFECTO)
+------------------------------------------------------------
+Ejecuta el proceso estándar (sin filtros):
+
+   $ python run_etl.py
+
+
+⚙️  3. EJECUCIÓN CON PARÁMETROS
+------------------------------------------------------------
+Puedes personalizar la ejecución usando los siguientes argumentos:
+
+   📅 Rango de Fechas Específico
+   -------------------------------------
+   Procesa datos solo dentro del intervalo definido (Formato: YYYYMMDD):
+
+   $ python run_etl.py --start_date 20250101 --end_date 20250331
+
+
+   🌎 Filtrado por País
+   -------------------------------------
+   Procesa datos para una geografía específica (ej. Guatemala):
+
+   $ python run_etl.py --country GT
+
+
+   ⚡ Filtros Combinados (Full Custom)
+   -------------------------------------
+   Aplica rango de fechas y país simultáneamente:
+
+   $ python run_etl.py --start_date 20250101 --end_date 20250630 --country EC
